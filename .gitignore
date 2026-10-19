@@ -1,0 +1,10 @@
+site/
+.venv/
+__pycache__/
+*.pyc
+# outputs created when you run the examples locally
+books.csv
+quotes*.json
+api_quotes.json
+quotes_robust.csv
+done.txt

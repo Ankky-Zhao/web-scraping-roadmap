@@ -1,0 +1,28 @@
+name: Check examples
+
+# Runs every example against the practice sites once a week, so broken code is
+# noticed before readers notice it. 每周在练习站上运行全部示例，及时发现失效的代码。
+on:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+  pull_request:
+    paths: ["examples/**", "scripts/check_examples.py"]
+  push:
+    branches: [main]
+    paths: ["examples/**", "scripts/check_examples.py"]
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: examples/requirements.txt
+      - run: pip install -r examples/requirements.txt
+      - run: python -m playwright install --with-deps chromium
+      - run: python scripts/check_examples.py

@@ -1,0 +1,312 @@
+<title>Web Scraping Roadmap · 爬虫从零到实战</title>
+<meta name="description" content="A bilingual (中文 / English) roadmap for learning web scraping from zero, writing the code yourself or with an AI assistant.">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@700;900&display=swap">
+<style>
+/* Layout: a request inspector. Left rail = the route (stages as path segments with status chips), right = the response body. Two tracks share one page, colored like two request types. */
+:root{
+  --bg:#F2F4F3;--surface:#FFFFFF;--ink:#14211F;--muted:#5B6A67;--line:#D5DDDA;
+  --code-bg:#14211F;--code-fg:#DCE8E4;--code-cap:#8FA6A0;--code-line:#3A4C48;
+  --hand:#0B6E5F;--hand-soft:#DCEFEA;--ai:#B04E1A;--ai-soft:#F7E4D8;--warn:#9A2E2E;--warn-soft:#F6E1E1;
+  --display:"Noto Serif SC","Songti SC","STSong",Georgia,serif;
+  --body:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --mono:"JetBrains Mono","SFMono-Regular",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1716;--surface:#16211F;--ink:#E2ECE9;--muted:#93A6A1;--line:#2A3936;
+    --code-bg:#0A100F;--code-fg:#D3E2DD;--code-cap:#7F958F;--code-line:#2E3E3A;
+    --hand:#4FC2AC;--hand-soft:#173430;--ai:#F0915E;--ai-soft:#3A2418;--warn:#EE8F8F;--warn-soft:#3A1E1E;color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1716;--surface:#16211F;--ink:#E2ECE9;--muted:#93A6A1;--line:#2A3936;
+  --code-bg:#0A100F;--code-fg:#D3E2DD;--code-cap:#7F958F;--code-line:#2E3E3A;
+  --hand:#4FC2AC;--hand-soft:#173430;--ai:#F0915E;--ai-soft:#3A2418;--warn:#EE8F8F;--warn-soft:#3A1E1E;color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.75;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+a{color:var(--hand);text-underline-offset:3px}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--ai);outline-offset:2px}
+code{font-family:var(--mono);font-size:.88em;background:var(--hand-soft);padding:.05em .35em;border-radius:3px;overflow-wrap:anywhere}
+h1,h2,h3{text-wrap:balance;line-height:1.3;margin:0}
+p{margin:0}
+.wrap{max-width:1180px;margin:0 auto}
+
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-block:16px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:13px}
+.topbar .repo{color:var(--muted);text-decoration:none}
+.topbar .actions{display:flex;gap:10px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--surface)}
+.seg button{font:inherit;font-size:13px;border:0;background:transparent;color:var(--muted);padding:5px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.gh{color:var(--ink);text-decoration:none;border:1px solid var(--line);border-radius:6px;padding:4px 12px;background:var(--surface)}
+
+.hero{padding-block:40px 32px;border-bottom:1px solid var(--line);display:grid;gap:20px}
+.reqline{font-family:var(--mono);font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
+.reqline .verb{color:var(--hand);font-weight:600}
+.reqline .ok{background:var(--hand);color:var(--bg);padding:1px 8px;border-radius:3px;font-weight:600}
+.hero h1{font-family:var(--display);font-weight:900;font-size:clamp(32px,6vw,62px);letter-spacing:.01em}
+.hero h1 em{font-style:normal;color:var(--hand)}
+.lede{max-width:44em;color:var(--muted);font-size:17px}
+.mix{max-width:46em;color:var(--muted);font-size:15px}
+.tracks{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;max-width:820px}
+.track{border:1px solid var(--line);background:var(--surface);padding:16px 18px;border-radius:6px;display:grid;gap:6px;align-content:start}
+.track b{font-size:15px}
+.track.h{border-top:3px solid var(--hand)} .track.a{border-top:3px solid var(--ai)}
+.track p{font-size:14px;color:var(--muted)}
+
+.shell{display:grid;grid-template-columns:240px minmax(0,1fr);gap:48px;padding-top:36px}
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 20px);align-self:start;display:grid;gap:18px}
+.label{font-size:12px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+.route{list-style:none;margin:0;padding:0;display:grid;gap:2px;font-family:var(--mono);font-size:13px}
+.route a{display:flex;justify-content:space-between;gap:8px;padding:6px 8px;border-radius:4px;color:var(--ink);text-decoration:none}
+.route a:hover{background:var(--hand-soft)}
+.chip{font-size:11px;color:var(--muted)}
+.chip.done{color:var(--hand);font-weight:600}
+.meter{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--hand);width:0;transition:width .3s}
+.count{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums}
+.switch{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--surface)}
+.switch button{font:inherit;font-size:13px;border:0;background:transparent;color:var(--muted);padding:8px 6px;cursor:pointer}
+.switch button[aria-pressed="true"].h{background:var(--hand);color:var(--bg)}
+.switch button[aria-pressed="true"].a{background:var(--ai);color:var(--bg)}
+.reset{font:inherit;font-size:12px;background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;justify-self:start;padding:0}
+
+main{display:grid;gap:64px;min-width:0}
+.stage{display:grid;gap:20px;scroll-margin-top:24px;min-width:0}
+.stage-head{display:grid;gap:8px}
+.path{font-family:var(--mono);font-size:13px;color:var(--hand);display:flex;gap:12px;flex-wrap:wrap}
+.path .time{color:var(--muted)}
+.path.ai{color:var(--ai)} .path.warn{color:var(--warn)}
+.stage h2{font-family:var(--display);font-weight:700;font-size:clamp(24px,3.4vw,32px)}
+.goal{max-width:42em;color:var(--muted)}
+.concepts{display:grid;gap:10px;max-width:46em}
+.concepts ul,.pane ul{margin:0;padding-left:1.2em;display:grid;gap:4px}
+
+.panel{border:1px solid var(--line);border-radius:8px;background:var(--surface);overflow:hidden;min-width:0}
+.tabs{display:flex;border-bottom:1px solid var(--line)}
+.tabs button{font:inherit;font-size:14px;font-weight:500;flex:1;border:0;background:transparent;padding:11px 10px;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent}
+.tabs button.h[aria-selected="true"]{color:var(--hand);border-bottom-color:var(--hand)}
+.tabs button.a[aria-selected="true"]{color:var(--ai);border-bottom-color:var(--ai)}
+.pane{padding:18px;display:grid;gap:14px;min-width:0}
+.pane p,.pane li{font-size:15px}
+.pane h4{margin:0;font-size:13px;letter-spacing:.08em;color:var(--muted);font-weight:500}
+
+.code{background:var(--code-bg);color:var(--code-fg);border-radius:6px;min-width:0}
+.code pre{margin:0;padding:12px 16px 16px;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.65;tab-size:4}
+.code .cap{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px 0 16px;font-family:var(--mono);font-size:11px;color:var(--code-cap)}
+.code .cap a{color:var(--code-cap)}
+.copy{font:inherit;font-size:11px;background:transparent;border:1px solid var(--code-line);color:var(--code-fg);border-radius:4px;padding:2px 8px;cursor:pointer;flex:none}
+.prompt-cap{font-size:12px;color:var(--ai);letter-spacing:.06em}
+.prompt{border:1px dashed var(--ai);background:var(--ai-soft);border-radius:6px;padding:14px 16px;font-size:14.5px;position:relative;min-width:0}
+.prompt pre{margin:0;white-space:pre-wrap;font-family:var(--body);font-size:14.5px;padding-right:56px;overflow-wrap:anywhere}
+.prompt .copy{position:absolute;top:8px;right:8px;color:var(--ai);border-color:var(--ai)}
+
+.tasks{display:grid;gap:8px}
+.task{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:6px;background:var(--hand-soft);font-size:15px}
+.task input{width:18px;height:18px;margin-top:4px;accent-color:var(--hand);flex:none}
+.task label{cursor:pointer;min-width:0}
+
+.note{border-left:3px solid var(--warn);background:var(--warn-soft);padding:12px 16px;border-radius:0 6px 6px 0;font-size:15px;max-width:46em}
+.loop{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.loop div{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:12px;font-size:14px}
+.loop div b{display:block;color:var(--ai);font-size:13px;font-family:var(--mono);margin-bottom:2px}
+.loop-foot{font-size:13px;color:var(--muted);font-family:var(--mono)}
+
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14.5px;min-width:560px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+th{font-size:12px;letter-spacing:.08em;color:var(--muted);font-weight:500}
+td:first-child{font-family:var(--mono);font-weight:600;white-space:nowrap}
+
+.links{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.links a{display:grid;gap:2px;padding:12px 14px;border:1px solid var(--line);border-radius:6px;background:var(--surface);text-decoration:none;color:var(--ink)}
+.links a span{font-size:13px;color:var(--muted)}
+.links a:hover{border-color:var(--hand)}
+.links a.related{border-style:dashed;border-color:var(--ai)}
+
+footer{margin-top:72px;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);display:grid;gap:6px}
+
+@media (max-width:900px){
+  .shell{grid-template-columns:minmax(0,1fr);gap:28px}
+  .rail{position:static}
+  .route{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}html{scroll-behavior:auto}}
+</style>
+<!--BODY-->
+<div class="wrap" id="app"></div>
+<script id="data" type="application/json">__DATA__</script>
+<script>
+(function(){
+  var D = JSON.parse(document.getElementById("data").textContent);
+  var REPO = D.repo;
+  var UI = {
+    zh: {
+      htmlLang: "zh-CN", title: "爬虫从零到实战", route: "路线", show: "默认显示", hand: "自己写", ai: "交给 AI",
+      handTrack: "自己写代码", aiTrack: "借助 AI 编程", done: function(d,t){return d+" / "+t+" 个练习完成";},
+      reset: "清空进度", copy: "复制", copied: "已复制", selected: "已选中，按 Ctrl+C 复制", prompt: "提示词模板",
+      links: "参考资料", related: "姊妹项目", source: "在 GitHub 查看", meta: "content-type: 中文教程",
+      footer: "进度只保存在当前浏览器里，换设备或清除浏览数据后会重置。",
+      license: "代码以 MIT 许可发布，教程文字以 CC BY 4.0 许可发布。欢迎通过 Pull Request 改进内容。"
+    },
+    en: {
+      htmlLang: "en", title: "Web Scraping from Zero", route: "Route", show: "Show by default", hand: "Write it", ai: "Ask AI",
+      handTrack: "Write the code yourself", aiTrack: "Build it with AI", done: function(d,t){return d+" / "+t+" exercises done";},
+      reset: "Clear progress", copy: "Copy", copied: "Copied", selected: "Selected, press Ctrl+C", prompt: "Prompt template",
+      links: "References", related: "Companion project", source: "View on GitHub", meta: "content-type: tutorial/en",
+      footer: "Progress is stored only in this browser and resets on another device or after clearing site data.",
+      license: "Code is MIT licensed and the tutorial text is CC BY 4.0. Improvements are welcome as pull requests."
+    }
+  };
+
+  var KEY = "scrape-roadmap-v1";
+  var state = {lang: null, track: "hand", done: {}};
+  try { var s = JSON.parse(localStorage.getItem(KEY) || "null"); if (s) { state.lang = s.lang || null; state.track = s.track || "hand"; state.done = s.done || {}; } } catch (e) {}
+  try { var q = new URLSearchParams(location.search).get("lang"); if (q === "en" || q === "zh") state.lang = q; } catch (e) {}
+  if (!state.lang) state.lang = /^zh/i.test(navigator.language || "") ? "zh" : "en";
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+  function L(o){ return o == null ? "" : (typeof o === "string" ? o : (o[state.lang] != null ? o[state.lang] : o.zh)); }
+
+  function block(b){
+    var u = UI[state.lang];
+    if (b.t === "p") return "<p>" + L(b) + "</p>";
+    if (b.t === "list") {
+      var items = L(b).map(function(x){ return "<li>" + x + "</li>"; }).join("");
+      return (b.title ? "<h4>" + L(b.title) + "</h4>" : "") + "<ul>" + items + "</ul>";
+    }
+    if (b.t === "code") {
+      var cap = b.file
+        ? '<a href="' + REPO + '/blob/main/' + b.file + '" target="_blank" rel="noopener" title="' + u.source + '">' + esc(b.file) + "</a>"
+        : esc(b.label || "");
+      if (b.file && b.label) cap = esc(b.label) + " · " + cap;
+      return '<div class="code"><div class="cap"><span>' + cap + '</span><button class="copy" type="button">' + u.copy + "</button></div><pre>" + esc(b.text) + "</pre></div>";
+    }
+    if (b.t === "prompt") {
+      return '<div class="prompt-cap">' + u.prompt + '</div><div class="prompt"><button class="copy" type="button">' + u.copy + "</button><pre>" + esc(L(b)) + "</pre></div>";
+    }
+    return "";
+  }
+
+  function stageHTML(st){
+    var u = UI[state.lang];
+    var tasks = st.tasks.map(function(t){
+      return '<div class="task"><input type="checkbox" id="' + t.id + '"' + (state.done[t.id] ? " checked" : "") + '><label for="' + t.id + '">' + L(t) + "</label></div>";
+    }).join("");
+    return '<section class="stage" id="' + st.id + '" data-name="' + esc(L(st.name)) + '">' +
+      '<div class="stage-head"><div class="path"><span>' + st.path + '</span><span class="time">' + L(st.time) + "</span></div>" +
+      "<h2>" + L(st.title) + '</h2><p class="goal">' + L(st.goal) + "</p></div>" +
+      (st.concepts.length ? '<div class="concepts">' + st.concepts.map(block).join("") + "</div>" : "") +
+      '<div class="panel"><div class="tabs" role="tablist">' +
+        '<button type="button" role="tab" class="h" data-track="hand" aria-selected="' + (state.track === "hand") + '">' + u.hand + "</button>" +
+        '<button type="button" role="tab" class="a" data-track="ai" aria-selected="' + (state.track === "ai") + '">' + u.ai + "</button></div>" +
+        '<div class="pane" data-pane="hand"' + (state.track === "hand" ? "" : " hidden") + ">" + st.hand.map(block).join("") + "</div>" +
+        '<div class="pane" data-pane="ai"' + (state.track === "ai" ? "" : " hidden") + ">" + st.ai.map(block).join("") + "</div>" +
+      "</div>" +
+      '<div class="tasks">' + tasks + "</div></section>";
+  }
+
+  function render(){
+    var u = UI[state.lang];
+    document.documentElement.lang = u.htmlLang;
+    document.title = u.title + " · " + UI[state.lang === "zh" ? "en" : "zh"].title;
+    var m = D.meta, lp = D.loop, r = D.rules, db = D.debug;
+    var h = "";
+    h += '<div class="topbar"><a class="repo" href="' + REPO + '" target="_blank" rel="noopener">' + esc(REPO.replace("https://github.com/","")) + "</a>" +
+         '<div class="actions"><div class="seg" role="group" aria-label="Language">' +
+         '<button type="button" data-lang="zh" aria-pressed="' + (state.lang === "zh") + '">中文</button>' +
+         '<button type="button" data-lang="en" aria-pressed="' + (state.lang === "en") + '">EN</button></div>' +
+         '<a class="gh" href="' + REPO + '" target="_blank" rel="noopener">GitHub ↗</a></div></div>';
+    h += '<header class="hero"><div class="reqline"><span class="verb">GET</span><span>/learn/web-scraping HTTP/1.1</span><span class="ok">200 OK</span><span>' + u.meta + "</span></div>" +
+         "<h1>" + L(m.h1) + '</h1><p class="lede">' + L(m.lede) + "</p>" +
+         '<div class="tracks"><div class="track h"><b>' + u.handTrack + "</b><p>" + L(m.trackHand) + '</p></div><div class="track a"><b>' + u.aiTrack + "</b><p>" + L(m.trackAi) + "</p></div></div>" +
+         '<p class="mix">' + L(m.mix) + "</p></header>";
+
+    var main = D.stages.map(stageHTML).join("");
+    main += '<section class="stage" id="ai-loop" data-name="' + esc(L(lp.title)) + '"><div class="stage-head"><div class="path ai"><span>/guide/ai-workflow</span></div><h2>' + L(lp.title) + '</h2><p class="goal">' + L(lp.goal) + "</p></div>" +
+            '<div class="loop">' + lp.steps.map(function(s){ return "<div><b>" + L(s.k) + "</b>" + L(s.v) + "</div>"; }).join("") + "</div>" +
+            '<p class="loop-foot">' + L(lp.foot) + '</p><div class="concepts"><p><b>' + L(lp.mistakesTitle) + "</b></p><ul>" + L(lp.mistakes).map(function(x){ return "<li>" + x + "</li>"; }).join("") + "</ul></div></section>";
+    main += '<section class="stage" id="rules" data-name="' + esc(L(r.title)) + '"><div class="stage-head"><div class="path warn"><span>/guide/rules</span></div><h2>' + L(r.title) + '</h2><p class="goal">' + L(r.goal) + "</p></div>" +
+            '<div class="note">' + L(r.note) + '</div><div class="concepts"><ul>' + L(r.items).map(function(x){ return "<li>" + x + "</li>"; }).join("") + "</ul></div></section>";
+    main += '<section class="stage" id="debug" data-name="' + esc(L(db.title)) + '"><div class="stage-head"><div class="path"><span>/guide/debug</span></div><h2>' + L(db.title) + "</h2></div>" +
+            '<div class="tablewrap"><table><thead><tr>' + L(db.head).map(function(x){ return "<th>" + x + "</th>"; }).join("") + "</tr></thead><tbody>" +
+            db.rows.map(function(row){ return "<tr>" + L(row).map(function(c){ return "<td>" + c + "</td>"; }).join("") + "</tr>"; }).join("") + "</tbody></table></div></section>";
+    main += '<section class="stage" id="links" data-name="' + u.links + '"><div class="stage-head"><div class="path"><span>/guide/links</span></div><h2>' + u.links + '</h2></div><div class="links">' +
+            D.links.map(function(l){ return '<a href="' + l.url + '" target="_blank" rel="noopener">' + esc(l.name) + "<span>" + L(l.desc) + "</span></a>"; }).join("") +
+            '<a class="related" href="' + D.related.url + '" target="_blank" rel="noopener">' + u.related + " · " + esc(D.related.name) + "<span>" + L(D.related.desc) + "</span></a>" +
+            "</div></section>";
+
+    h += '<div class="shell"><aside class="rail" aria-label="' + u.route + '"><div class="label">' + u.route + '</div><ul class="route" id="route"></ul>' +
+         '<div style="display:grid;gap:6px"><div class="meter"><i id="meter"></i></div><div class="count" id="count"></div><button type="button" class="reset" id="reset">' + u.reset + "</button></div>" +
+         '<div style="display:grid;gap:6px"><div class="label">' + u.show + '</div><div class="switch" role="group">' +
+         '<button type="button" class="h" data-global="hand" aria-pressed="' + (state.track === "hand") + '">' + u.hand + "</button>" +
+         '<button type="button" class="a" data-global="ai" aria-pressed="' + (state.track === "ai") + '">' + u.ai + "</button></div></div></aside>" +
+         "<main>" + main + "</main></div>";
+    h += "<footer><span>" + u.footer + "</span><span>" + u.license + "</span></footer>";
+    document.getElementById("app").innerHTML = h;
+    wire();
+  }
+
+  function setTrack(t){
+    state.track = t; save();
+    document.querySelectorAll("[data-track]").forEach(function(b){ b.setAttribute("aria-selected", b.dataset.track === t ? "true" : "false"); });
+    document.querySelectorAll("[data-pane]").forEach(function(p){ p.hidden = p.dataset.pane !== t; });
+    document.querySelectorAll("[data-global]").forEach(function(b){ b.setAttribute("aria-pressed", b.dataset.global === t ? "true" : "false"); });
+  }
+
+  function progress(){
+    var u = UI[state.lang];
+    var boxes = document.querySelectorAll(".task input"), total = boxes.length, done = 0;
+    boxes.forEach(function(b){ if (b.checked) done++; });
+    document.getElementById("count").textContent = u.done(done, total);
+    document.getElementById("meter").style.width = (total ? done / total * 100 : 0) + "%";
+    document.querySelectorAll(".chip[data-for]").forEach(function(chip){
+      var bs = document.querySelectorAll("#" + chip.dataset.for + " .task input");
+      if (!bs.length) { chip.textContent = ""; return; }
+      var d = 0; bs.forEach(function(b){ if (b.checked) d++; });
+      chip.textContent = d === bs.length ? "200" : d + "/" + bs.length;
+      chip.className = "chip" + (d === bs.length ? " done" : "");
+    });
+  }
+
+  function wire(){
+    var route = document.getElementById("route");
+    document.querySelectorAll(".stage").forEach(function(s){
+      var li = document.createElement("li"), a = document.createElement("a"), n = document.createElement("span"), c = document.createElement("span");
+      a.href = "#" + s.id; n.textContent = s.dataset.name; c.className = "chip"; c.dataset.for = s.id;
+      a.appendChild(n); a.appendChild(c); li.appendChild(a); route.appendChild(li);
+    });
+    document.querySelectorAll("[data-track]").forEach(function(b){ b.addEventListener("click", function(){ setTrack(b.dataset.track); }); });
+    document.querySelectorAll("[data-global]").forEach(function(b){ b.addEventListener("click", function(){ setTrack(b.dataset.global); }); });
+    document.querySelectorAll("[data-lang]").forEach(function(b){ b.addEventListener("click", function(){
+      if (state.lang === b.dataset.lang) return;
+      var y = window.scrollY; state.lang = b.dataset.lang; save(); render(); window.scrollTo(0, y);
+    }); });
+    document.querySelectorAll(".task input").forEach(function(b){ b.addEventListener("change", function(){ state.done[b.id] = b.checked; save(); progress(); }); });
+    var resetArmed = false, rb = document.getElementById("reset");
+    rb.addEventListener("click", function(){
+      if (!resetArmed) { resetArmed = true; rb.textContent = state.lang === "zh" ? "再点一次确认清空" : "Click again to confirm"; return; }
+      state.done = {}; save(); document.querySelectorAll(".task input").forEach(function(b){ b.checked = false; }); progress();
+      resetArmed = false; rb.textContent = UI[state.lang].reset;
+    });
+    document.querySelectorAll(".copy").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var u = UI[state.lang], pre = btn.closest(".code,.prompt").querySelector("pre");
+        function ok(){ btn.textContent = u.copied; setTimeout(function(){ btn.textContent = u.copy; }, 1500); }
+        function fallback(){ var r = document.createRange(); r.selectNodeContents(pre); var sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); btn.textContent = u.selected; }
+        try { navigator.clipboard.writeText(pre.innerText).then(ok, fallback); } catch (e) { fallback(); }
+      });
+    });
+    progress();
+  }
+
+  render();
+})();
+</script>

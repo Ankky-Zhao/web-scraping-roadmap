@@ -1,0 +1,417 @@
+{
+  "meta": {
+    "title": {"zh": "爬虫从零到实战", "en": "Web Scraping from Zero"},
+    "h1": {"zh": "爬虫，从<em>零</em>到能交付", "en": "Web scraping, from <em>zero</em> to shipped"},
+    "lede": {
+      "zh": "这份路线写给没有编程基础的人。八个阶段大约需要四到六周的业余时间，每个阶段都有一个可以运行的小练习。全部练习都在专门供人练手的网站上完成，所以可以放心反复请求。",
+      "en": "A roadmap for people who have never written code. The eight stages take roughly four to six weeks of spare time, and every stage ends with a small exercise you can run. All exercises use sites built for scraping practice, so you can send requests to them as often as you like."
+    },
+    "trackHand": {
+      "zh": "理解每一行在做什么。慢一些，但遇到新网站时更容易自己判断问题出在哪里。",
+      "en": "Understand every line yourself. Slower, but when a new site breaks your scraper you can work out why."
+    },
+    "trackAi": {
+      "zh": "用提示词让 AI 生成代码，自己负责描述需求、运行和验收。上手快，但需要学会检查 AI 的错误。",
+      "en": "Let an AI assistant write the code while you describe the task, run it and check the result. Faster to start, but you need to learn how to catch the AI's mistakes."
+    },
+    "mix": {
+      "zh": "比较推荐的做法是两条路线混合。阶段 0 到 2 尽量自己敲一遍，之后再把重复劳动交给 AI。每个阶段下方的标签可以随时切换路线。",
+      "en": "Mixing both tracks tends to work best. Type stages 0 to 2 yourself, then hand the repetitive work to AI. The tabs in every stage switch tracks at any time."
+    }
+  },
+
+  "stages": [
+    {
+      "id": "s0", "path": "/stage-0",
+      "name": {"zh": "准备工作台", "en": "Set up"},
+      "title": {"zh": "准备工作台", "en": "Set up your workbench"},
+      "time": {"zh": "约半天", "en": "about half a day"},
+      "goal": {
+        "zh": "装好 Python 和编辑器，并学会打开浏览器的开发者工具。爬虫的大部分时间其实花在开发者工具里观察网页。",
+        "en": "Install Python and an editor, and learn to open the browser's developer tools. Most scraping time is spent in DevTools looking at how a page is built."
+      },
+      "concepts": [
+        {"t": "list",
+         "zh": ["<b>Python 3.10 或更新版本</b>，在 python.org 下载。Windows 安装时勾选 Add Python to PATH。",
+                "<b>VS Code</b> 作为编辑器，装上官方的 Python 扩展。",
+                "<b>虚拟环境</b>让每个项目的依赖互不干扰，养成习惯后会省掉很多麻烦。",
+                "<b>开发者工具</b>在 Chrome、Edge 或 Firefox 里按 F12 打开。重点关注 Elements 和 Network 两个面板。"],
+         "en": ["<b>Python 3.10 or newer</b> from python.org. On Windows, tick Add Python to PATH during setup.",
+                "<b>VS Code</b> as your editor, with the official Python extension.",
+                "<b>A virtual environment</b> keeps each project's packages separate and saves a lot of trouble later.",
+                "<b>Developer tools</b> open with F12 in Chrome, Edge or Firefox. The Elements and Network panels matter most."]}
+      ],
+      "hand": [
+        {"t": "p", "zh": "新建文件夹 <code>scraper-lab</code>，在 VS Code 里打开，然后在终端依次运行下面的命令。", "en": "Create a folder called <code>scraper-lab</code>, open it in VS Code, and run these commands in the terminal."},
+        {"t": "code", "label": "terminal", "text": "# create and activate a virtual environment · 创建并激活虚拟环境\npython -m venv .venv\n# Windows:\n.venv\\Scripts\\activate\n# macOS / Linux:\nsource .venv/bin/activate\n\n# install everything this roadmap uses · 安装本教程用到的库\npip install requests beautifulsoup4 lxml pandas\n\n# check · 检查\npython check_env.py"},
+        {"t": "code", "file": "examples/00_setup/check_env.py"},
+        {"t": "p", "zh": "终端提示符前面出现 <code>(.venv)</code> 就说明激活成功。", "en": "When the prompt starts with <code>(.venv)</code>, the environment is active."}
+      ],
+      "ai": [
+        {"t": "p", "zh": "环境问题和操作系统关系很大，AI 在这里很好用。把自己的系统版本写清楚，并要求它解释每条命令。", "en": "Setup problems depend heavily on your operating system, which is where AI helps a lot. State your OS version and ask it to explain each command."},
+        {"t": "prompt",
+         "zh": "我是编程零基础，用的是 [Windows 11 / macOS 14]。请一步一步教我：\n1. 安装 Python 3.10 或更新版本，并确认安装成功；\n2. 安装 VS Code 和 Python 扩展；\n3. 在一个叫 scraper-lab 的文件夹里创建虚拟环境并激活；\n4. 安装 requests、beautifulsoup4、lxml、pandas。\n每一步告诉我应该看到什么输出，以及常见报错怎么处理。",
+         "en": "I have never programmed and I use [Windows 11 / macOS 14]. Walk me through, one step at a time:\n1. installing Python 3.10 or newer and confirming it works;\n2. installing VS Code and its Python extension;\n3. creating and activating a virtual environment in a folder called scraper-lab;\n4. installing requests, beautifulsoup4, lxml and pandas.\nFor each step, tell me what output I should see and how to fix the common errors."},
+        {"t": "p", "zh": "遇到报错时，把完整的报错文字复制给 AI，比描述“它不工作”有效得多。", "en": "When something fails, paste the full error text. That works far better than saying it does not work."}
+      ],
+      "tasks": [
+        {"id": "t0a", "zh": "<code>python check_env.py</code> 显示各个库都已安装", "en": "<code>python check_env.py</code> shows every library as installed"},
+        {"id": "t0b", "zh": "打开任意网页按 F12，在 Network 面板刷新页面，看到请求列表", "en": "Open any page, press F12, reload with the Network panel open and see the list of requests"}
+      ]
+    },
+
+    {
+      "id": "s1", "path": "/stage-1",
+      "name": {"zh": "读懂网页", "en": "Read a page"},
+      "title": {"zh": "读懂网页", "en": "Learn to read a web page"},
+      "time": {"zh": "一到两天", "en": "one to two days"},
+      "goal": {
+        "zh": "爬虫做的事情和浏览器一样。发出请求，拿到 HTML，再从里面挑出想要的部分。这一阶段先不写 Python，只用浏览器理解这三件事。",
+        "en": "A scraper does what a browser does. It sends a request, receives HTML and picks out the parts you need. This stage uses only the browser to understand those three steps, before any Python."
+      },
+      "concepts": [
+        {"t": "p", "zh": "<b>HTTP 请求与响应。</b>浏览器向服务器发一个 GET 请求，服务器返回状态码和内容。200 表示成功，404 表示找不到，403 表示拒绝访问，429 表示请求太频繁。",
+                   "en": "<b>HTTP requests and responses.</b> The browser sends a GET request and the server answers with a status code and content. 200 means success, 404 not found, 403 access refused and 429 too many requests."},
+        {"t": "p", "zh": "<b>HTML 是一棵树。</b>标签互相嵌套，比如 <code>&lt;div class='quote'&gt;</code> 里面装着 <code>&lt;span class='text'&gt;</code>。爬虫靠这种结构定位数据。",
+                   "en": "<b>HTML is a tree.</b> Tags nest inside each other, for example a <code>&lt;span class='text'&gt;</code> inside a <code>&lt;div class='quote'&gt;</code>. Scrapers find data by following this structure."},
+        {"t": "p", "zh": "<b>CSS 选择器</b>是描述“树上哪一个节点”的写法。<code>div.quote</code> 表示 class 为 quote 的 div，<code>div.quote span.text</code> 表示它里面 class 为 text 的 span，<code>#main</code> 表示 id 为 main 的元素，<code>a[href]</code> 表示带链接的 a 标签。",
+                   "en": "<b>CSS selectors</b> describe which nodes of the tree you want. <code>div.quote</code> is a div with class quote, <code>div.quote span.text</code> is a span with class text inside it, <code>#main</code> is the element with id main, and <code>a[href]</code> is any link."}
+      ],
+      "hand": [
+        {"t": "p", "zh": "打开 <a href='https://quotes.toscrape.com/' target='_blank' rel='noopener'>quotes.toscrape.com</a>，在第一条名言上右键选“检查”，观察它在 Elements 面板里的结构。然后切到 Console 面板，逐行运行下面的代码。",
+                   "en": "Open <a href='https://quotes.toscrape.com/' target='_blank' rel='noopener'>quotes.toscrape.com</a>, right-click the first quote and choose Inspect to see its structure in the Elements panel. Then switch to the Console panel and run these lines one by one."},
+        {"t": "code", "file": "examples/01_read_the_page/console_snippets.js", "label": "browser console"},
+        {"t": "p", "zh": "在 Console 里先试通选择器，再写进 Python，可以省掉大量来回调试。", "en": "Getting a selector right in the Console before moving it into Python saves a lot of back and forth."}
+      ],
+      "ai": [
+        {"t": "p", "zh": "在 Elements 面板里右键某个元素，选 Copy → Copy outerHTML，把这段 HTML 交给 AI 分析。给 AI 真实的 HTML 片段，是避免它编造选择器的关键。",
+                   "en": "In the Elements panel, right-click an element and choose Copy → Copy outerHTML, then give that HTML to the AI. Real HTML is what stops it from inventing selectors."},
+        {"t": "prompt",
+         "zh": "下面是网页上一条数据的 HTML。我想提取名言正文、作者和标签。\n请帮我：\n1. 用通俗的话解释这段 HTML 的嵌套结构；\n2. 给出每个字段对应的 CSS 选择器；\n3. 给我一行可以在浏览器 Console 里运行的 JavaScript，用来验证选择器是否正确。\n\n[粘贴 outerHTML]",
+         "en": "Below is the HTML for one item on a web page. I want to extract the quote text, the author and the tags.\nPlease:\n1. explain the nesting of this HTML in plain words;\n2. give me a CSS selector for each field;\n3. give me one line of JavaScript I can run in the browser Console to check the selectors.\n\n[paste outerHTML]"},
+        {"t": "p", "zh": "拿到选择器后一定要在 Console 里跑一遍。数量对得上，再进入下一步。", "en": "Run the selectors in the Console before trusting them. Move on once the counts match what you see on the page."}
+      ],
+      "tasks": [
+        {"id": "t1a", "zh": "在 Console 里写出能选中全部作者和全部标签的选择器", "en": "Write selectors in the Console that match every author and every tag"},
+        {"id": "t1b", "zh": "在 Network 面板找到主页面请求，说出它的状态码和 Content-Type", "en": "Find the main page request in the Network panel and read its status code and Content-Type"}
+      ]
+    },
+
+    {
+      "id": "s2", "path": "/stage-2",
+      "name": {"zh": "第一个爬虫", "en": "First scraper"},
+      "title": {"zh": "第一个爬虫", "en": "Your first scraper"},
+      "time": {"zh": "两到三天", "en": "two to three days"},
+      "goal": {
+        "zh": "用 requests 下载网页，用 BeautifulSoup 解析，打印出第一页的十条名言。这是整条路线里最重要的一步，建议无论选哪条路线都亲手敲一遍。",
+        "en": "Download a page with requests, parse it with BeautifulSoup and print the ten quotes on page one. This is the most important step in the roadmap, so type it yourself whichever track you follow."
+      },
+      "concepts": [],
+      "hand": [
+        {"t": "code", "file": "examples/02_first_scraper/quotes_v1.py"},
+        {"t": "p", "zh": "运行 <code>python quotes_v1.py</code>。读代码时留意 <code>select</code> 返回列表，<code>select_one</code> 返回单个元素或 <code>None</code>。后者是新手最常见的报错来源，选择器写错时会出现 <code>'NoneType' object has no attribute</code>。",
+                   "en": "Run <code>python quotes_v1.py</code>. Notice that <code>select</code> returns a list while <code>select_one</code> returns one element or <code>None</code>. The second is the most common source of beginner errors, and a wrong selector shows up as <code>'NoneType' object has no attribute</code>."}
+      ],
+      "ai": [
+        {"t": "prompt",
+         "zh": "用 Python 的 requests 和 BeautifulSoup（解析器用 lxml）写一个脚本，抓取 https://quotes.toscrape.com/ 第一页。\n已验证的选择器：每条数据是 div.quote，正文 span.text，作者 small.author，标签 a.tag。\n要求：设置 10 秒超时；打印状态码；每条输出作者、正文前 40 个字和标签列表。\n请在每一行加中文注释，并在最后解释 select 和 select_one 的区别。",
+         "en": "Write a Python script with requests and BeautifulSoup (lxml parser) that scrapes page one of https://quotes.toscrape.com/.\nSelectors I have already checked: each item is div.quote, text is span.text, author is small.author, tags are a.tag.\nRequirements: a 10 second timeout; print the status code; for each item print the author, the first 40 characters of the text and the list of tags.\nComment every line, and at the end explain the difference between select and select_one."},
+        {"t": "list", "title": {"zh": "验收 AI 的代码", "en": "Check the AI's code"},
+         "zh": ["选择器和你在 Console 里验证过的一致，没有被 AI 自作主张改掉。",
+                "<code>requests.get</code> 带了 <code>timeout</code>。",
+                "运行后正好输出 10 条。少了或多了都要追问原因。",
+                "能用自己的话复述每一行在做什么。复述不出来的那一行，单独问 AI。"],
+         "en": ["The selectors match the ones you tested in the Console and were not quietly changed.",
+                "<code>requests.get</code> has a <code>timeout</code>.",
+                "It prints exactly 10 items. If it prints more or fewer, ask why.",
+                "You can explain every line in your own words. Ask about any line you cannot."]}
+      ],
+      "tasks": [
+        {"id": "t2a", "zh": "脚本成功输出第一页 10 条名言", "en": "The script prints the 10 quotes on page one"},
+        {"id": "t2b", "zh": "故意把选择器改错，读懂报错信息，再改回来", "en": "Break a selector on purpose, read the error, then fix it"}
+      ]
+    },
+
+    {
+      "id": "s3", "path": "/stage-3",
+      "name": {"zh": "翻页与保存", "en": "Pages & CSV"},
+      "title": {"zh": "翻页与保存", "en": "Follow pages and save the data"},
+      "time": {"zh": "三到四天", "en": "three to four days"},
+      "goal": {
+        "zh": "换到 <a href='https://books.toscrape.com/' target='_blank' rel='noopener'>books.toscrape.com</a>，抓取 50 页共 1000 本书的书名、价格和评分，存成 CSV，用 Excel 能直接打开。",
+        "en": "Move to <a href='https://books.toscrape.com/' target='_blank' rel='noopener'>books.toscrape.com</a> and collect the title, price and rating of all 1000 books across 50 pages into a CSV file that opens in Excel."
+      },
+      "concepts": [
+        {"t": "p", "zh": "<b>翻页的两种思路。</b>一种是找到网址规律，比如这个网站的第 n 页是 <code>catalogue/page-n.html</code>。另一种是每页找“下一页”链接，一直跟到没有为止。后者更通用。",
+                   "en": "<b>Two ways to paginate.</b> You can spot the URL pattern, here <code>catalogue/page-n.html</code>, or follow the next link on every page until there is none. The second works on more sites."},
+        {"t": "p", "zh": "<b>编码问题。</b>这个网站的价格符号 £ 如果直接打印，可能变成 <code>Â£</code>。原因是 requests 猜错了编码，手动设置 <code>resp.encoding = \"utf-8\"</code> 即可。",
+                   "en": "<b>Encoding.</b> The £ sign on this site may print as <code>Â£</code> because requests guesses the wrong encoding. Setting <code>resp.encoding = \"utf-8\"</code> fixes it."},
+        {"t": "p", "zh": "<b>请求间隔。</b>循环请求时每次停一秒左右，这是对网站最基本的礼貌，也能减少被封的概率。",
+                   "en": "<b>Pause between requests.</b> Waiting about a second per request is basic courtesy towards the site and lowers the chance of being blocked."}
+      ],
+      "hand": [
+        {"t": "code", "file": "examples/03_pagination/books.py"},
+        {"t": "p", "zh": "<code>urljoin</code> 值得单独理解。网页里的链接常常是相对路径，比如 <code>page-2.html</code>，需要和当前网址拼成完整地址。",
+                   "en": "<code>urljoin</code> deserves a closer look. Links in pages are often relative, such as <code>page-2.html</code>, and need to be combined with the current URL."}
+      ],
+      "ai": [
+        {"t": "prompt",
+         "zh": "在上一个脚本的基础上，改成抓取 https://books.toscrape.com/catalogue/page-1.html 开始的全部页面。\n页面结构：每本书 article.product_pod；书名在 h3 a 的 title 属性；价格 p.price_color；评分是 p.star-rating 的第二个 class（One 到 Five）。下一页链接 li.next a，是相对路径。\n要求：\n- 通过“下一页”链接翻页，用 urljoin 拼网址；\n- 设置 resp.encoding = \"utf-8\"，价格转成数字；\n- 每页之间 time.sleep(1)；\n- 用 pandas 保存为 books.csv，编码 utf-8-sig；\n- 最后打印每个评分等级的平均价格。",
+         "en": "Extend the previous script to scrape every page starting at https://books.toscrape.com/catalogue/page-1.html.\nPage structure: each book is article.product_pod; the title is the title attribute of h3 a; the price is p.price_color; the rating is the second class of p.star-rating (One to Five). The next link is li.next a and is relative.\nRequirements:\n- paginate by following the next link, joining URLs with urljoin;\n- set resp.encoding = \"utf-8\" and turn prices into numbers;\n- time.sleep(1) between pages;\n- save books.csv with pandas using utf-8-sig;\n- finally print the average price per rating."},
+        {"t": "list", "title": {"zh": "验收 AI 的代码", "en": "Check the AI's code"},
+         "zh": ["最终行数应该是 1000。不是的话，检查翻页是否提前停止。",
+                "打开 CSV 看价格列，不能有乱码或货币符号残留。",
+                "确认循环里有等待语句。AI 生成的代码经常省略这一点。"],
+         "en": ["The CSV should have 1000 rows. If not, check whether pagination stopped early.",
+                "Open the CSV and look at the price column for garbled characters or leftover currency signs.",
+                "Make sure the loop waits between requests. AI code often leaves this out."]}
+      ],
+      "tasks": [
+        {"id": "t3a", "zh": "books.csv 里有 1000 行，价格是数字", "en": "books.csv has 1000 rows and prices are numbers"},
+        {"id": "t3b", "zh": "用 pandas 算出每个评分等级的平均价格", "en": "Use pandas to compute the average price per rating"}
+      ]
+    },
+
+    {
+      "id": "s4", "path": "/stage-4",
+      "name": {"zh": "动态网页", "en": "Dynamic pages"},
+      "title": {"zh": "动态网页", "en": "Pages built by JavaScript"},
+      "time": {"zh": "三到五天", "en": "three to five days"},
+      "goal": {
+        "zh": "很多网站的数据由 JavaScript 加载，requests 拿到的 HTML 里看不到。判断依据很简单，用 requests 抓到空列表，但浏览器里明明有内容。",
+        "en": "Many sites load their data with JavaScript, so it is missing from the HTML that requests receives. The tell-tale sign is an empty list in Python while the browser clearly shows content."
+      },
+      "concepts": [
+        {"t": "p", "zh": "<b>优先找接口。</b>在 Network 面板筛选 Fetch/XHR，滚动或翻页时观察新出现的请求。很多时候数据来自一个返回 JSON 的接口，直接请求它比解析 HTML 更快、更稳定。",
+                   "en": "<b>Look for the API first.</b> Filter the Network panel by Fetch/XHR and watch what appears as you scroll or change page. The data often comes from an endpoint that returns JSON, and calling it directly is faster and more stable than parsing HTML."},
+        {"t": "p", "zh": "<b>找不到接口再用浏览器自动化。</b>Playwright 会真正启动一个浏览器执行 JavaScript，再从渲染后的页面里取数据。它更慢，但通用性强。",
+                   "en": "<b>Automate a browser when there is no API.</b> Playwright starts a real browser, runs the JavaScript and lets you read the rendered page. It is slower but works almost anywhere."}
+      ],
+      "hand": [
+        {"t": "p", "zh": "打开 <a href='https://quotes.toscrape.com/scroll' target='_blank' rel='noopener'>quotes.toscrape.com/scroll</a>，在 Network 里往下滚动，可以看到对 <code>/api/quotes?page=2</code> 的请求。直接调用它。",
+                   "en": "Open <a href='https://quotes.toscrape.com/scroll' target='_blank' rel='noopener'>quotes.toscrape.com/scroll</a>, scroll down with the Network panel open and you will see a request to <code>/api/quotes?page=2</code>. Call it directly."},
+        {"t": "code", "file": "examples/04_dynamic/api_quotes.py"},
+        {"t": "p", "zh": "对于 <a href='https://quotes.toscrape.com/js/' target='_blank' rel='noopener'>/js/</a> 这种在页面内渲染的版本，用 Playwright。先运行 <code>pip install playwright</code> 和 <code>playwright install chromium</code>。",
+                   "en": "For the <a href='https://quotes.toscrape.com/js/' target='_blank' rel='noopener'>/js/</a> version, which renders inside the page, use Playwright. Run <code>pip install playwright</code> and <code>playwright install chromium</code> first."},
+        {"t": "code", "file": "examples/04_dynamic/js_quotes.py"}
+      ],
+      "ai": [
+        {"t": "p", "zh": "在 Network 面板右键目标请求，选 Copy → Copy as cURL，把它和响应的一小段一起交给 AI。这样 AI 不需要猜测接口格式。",
+                   "en": "Right-click the request in the Network panel, choose Copy → Copy as cURL, and give it to the AI together with a piece of the response. Then the AI does not have to guess the API format."},
+        {"t": "prompt",
+         "zh": "我在浏览器 Network 面板里找到了数据接口，下面是它的 cURL 和一段返回的 JSON。\n请用 Python requests 改写成脚本：\n- 只保留必要的请求头，并解释每个保留的原因；\n- 根据 JSON 里的分页字段循环到最后一页，每次间隔 1 秒；\n- 把结果保存为 CSV。\n\ncURL：\n[粘贴]\n\nJSON 示例：\n[粘贴前 30 行]",
+         "en": "I found the data endpoint in the browser's Network panel. Below are its cURL command and a sample of the JSON it returns.\nRewrite it as a Python requests script that:\n- keeps only the headers that are needed and explains why each one stays;\n- loops through every page using the paging field in the JSON, waiting 1 second each time;\n- saves the results as CSV.\n\ncURL:\n[paste]\n\nJSON sample:\n[paste the first 30 lines]"},
+        {"t": "list", "title": {"zh": "需要留意", "en": "Watch out for"},
+         "zh": ["AI 有时会给出 Selenium 的旧写法，比如 <code>find_element_by_css_selector</code>，这个方法在新版本里已经移除。看到就要求它改用当前写法或换成 Playwright。",
+                "cURL 里可能带着你的 Cookie 和登录凭据，粘贴前删掉 Cookie 和 Authorization 这类请求头。"],
+         "en": ["AI sometimes writes old Selenium code such as <code>find_element_by_css_selector</code>, which newer versions have removed. Ask for current syntax or for Playwright instead.",
+                "A copied cURL may contain your cookies and login tokens. Delete the Cookie and Authorization headers before pasting it anywhere."]}
+      ],
+      "tasks": [
+        {"id": "t4a", "zh": "通过接口拿到 /scroll 版本的全部 100 条名言", "en": "Get all 100 quotes of the /scroll version through the API"},
+        {"id": "t4b", "zh": "用 Playwright 抓到 /js/ 版本第一页", "en": "Scrape page one of the /js/ version with Playwright"}
+      ]
+    },
+
+    {
+      "id": "s5", "path": "/stage-5",
+      "name": {"zh": "稳健与礼貌", "en": "Robust & polite"},
+      "title": {"zh": "稳健与礼貌", "en": "Make it robust and polite"},
+      "time": {"zh": "两到三天", "en": "two to three days"},
+      "goal": {
+        "zh": "练习网站很少出错，真实网站会超时、限流、改版。这一阶段把脚本变得能扛住意外，同时减轻对目标网站的负担。",
+        "en": "Practice sites rarely fail. Real sites time out, rate-limit and change their layout. This stage makes your script survive surprises while putting less load on the site."
+      },
+      "concepts": [
+        {"t": "list",
+         "zh": ["<b>robots.txt</b> 写明网站希望爬虫避开哪些路径，抓取前先读。",
+                "<b>User-Agent</b> 写清楚你是谁、怎么联系，而不是伪装成普通浏览器。",
+                "<b>自动重试</b>只针对临时错误，比如 429 和 5xx，并且每次重试等待更久。",
+                "<b>断点续爬</b>把已完成的网址记下来，脚本中断后从断点继续，避免重复请求。"],
+         "en": ["<b>robots.txt</b> lists the paths a site asks crawlers to avoid. Read it before you start.",
+                "<b>User-Agent</b> should say who you are and how to reach you instead of pretending to be a normal browser.",
+                "<b>Retries</b> only for temporary errors such as 429 and 5xx, waiting longer each time.",
+                "<b>Resuming</b> means recording finished URLs so an interrupted run continues where it stopped instead of repeating requests."]}
+      ],
+      "hand": [
+        {"t": "code", "file": "examples/05_robust/polite_session.py"},
+        {"t": "p", "zh": "试着运行到一半按 Ctrl+C，再重新运行，观察日志里的 skip。然后把 <code>make_session</code> 用到阶段 3 的脚本里。",
+                   "en": "Press Ctrl+C halfway, run it again and look for skip in the log. Then reuse <code>make_session</code> in your stage 3 script."}
+      ],
+      "ai": [
+        {"t": "prompt",
+         "zh": "请重构我下面的爬虫脚本，让它更稳健也更礼貌：\n- 使用 requests.Session，User-Agent 写成 \"LearningBot/0.1 (contact: 我的邮箱)\"；\n- 对 429 和 5xx 自动重试 3 次，指数退避；\n- 抓取前用 urllib.robotparser 检查 robots.txt；\n- 用 logging 记录每个网址和状态码；\n- 把已完成的网址写进 done.txt，重新运行时跳过它们。\n不要伪装浏览器请求头，不要加入任何绕过验证码或封禁的手段。\n\n[粘贴阶段 3 的代码]",
+         "en": "Refactor my scraper below so it is more robust and more polite:\n- use requests.Session with User-Agent \"LearningBot/0.1 (contact: my email)\";\n- retry 429 and 5xx responses 3 times with exponential backoff;\n- check robots.txt with urllib.robotparser before fetching;\n- log every URL and status code with logging;\n- write finished URLs to done.txt and skip them on the next run.\nDo not fake browser headers, and do not add anything that bypasses CAPTCHAs or blocks.\n\n[paste your stage 3 code]"},
+        {"t": "p", "zh": "最后一句很有必要。不加约束时，AI 常会主动加上伪造浏览器指纹或代理轮换之类的做法，这些手段在不少网站的条款里是明确禁止的。",
+                   "en": "The last instruction matters. Left alone, AI often adds faked browser fingerprints or rotating proxies, which many sites' terms explicitly forbid."}
+      ],
+      "tasks": [
+        {"id": "t5a", "zh": "脚本中途按 Ctrl+C 中断后，重新运行能从断点继续", "en": "After stopping the script with Ctrl+C, a second run continues from where it stopped"},
+        {"id": "t5b", "zh": "读懂三个常用网站的 robots.txt，说出它们禁止了哪些路径", "en": "Read the robots.txt of three sites you use and name the paths they disallow"}
+      ]
+    },
+
+    {
+      "id": "s6", "path": "/stage-6",
+      "name": {"zh": "Scrapy 框架", "en": "Scrapy"},
+      "title": {"zh": "Scrapy 框架", "en": "Scale up with Scrapy"},
+      "time": {"zh": "三到五天", "en": "three to five days"},
+      "goal": {
+        "zh": "前面手动处理的翻页、重试、限速、去重和导出，Scrapy 都已经内置。需要抓几万页以上时，用框架比自己拼装更省心。",
+        "en": "Scrapy has pagination, retries, rate limiting, de-duplication and export built in, all of which you wrote by hand so far. For tens of thousands of pages, a framework saves a lot of effort."
+      },
+      "concepts": [],
+      "hand": [
+        {"t": "p", "zh": "运行 <code>pip install scrapy</code>，新建下面的文件。", "en": "Run <code>pip install scrapy</code> and create this file."},
+        {"t": "code", "file": "examples/06_scrapy/quotes_spider.py"},
+        {"t": "code", "label": "terminal", "text": "scrapy runspider quotes_spider.py -O quotes.json"},
+        {"t": "p", "zh": "对比阶段 2 的代码，选择器写法几乎一样，变化在于不再手写循环和请求，而是用 <code>yield</code> 把数据和下一页交给框架调度。",
+                   "en": "Compared with stage 2, the selectors are almost the same. What changes is that you no longer write the loop and the requests yourself. You <code>yield</code> items and next pages and the framework schedules them."}
+      ],
+      "ai": [
+        {"t": "prompt",
+         "zh": "把我阶段 3 抓 books.toscrape.com 的 requests 脚本改写成 Scrapy 项目（用 scrapy startproject）。\n要求：遵守 robots.txt；DOWNLOAD_DELAY = 1；开启 AutoThrottle；用 Item 定义字段；用 ItemPipeline 把价格转成数字；导出 CSV。\n请画一个简单的文字示意图，说明 Spider、Scheduler、Downloader、Pipeline 之间数据怎么流动，并对照我原来的脚本说明哪些代码被框架替代了。",
+         "en": "Turn my stage 3 requests script for books.toscrape.com into a Scrapy project (scrapy startproject).\nRequirements: obey robots.txt; DOWNLOAD_DELAY = 1; enable AutoThrottle; define the fields as an Item; convert prices to numbers in an ItemPipeline; export CSV.\nDraw a simple text diagram of how data flows between Spider, Scheduler, Downloader and Pipeline, and point out which parts of my original script the framework replaces."},
+        {"t": "p", "zh": "让 AI 对照旧代码讲解，比直接读框架文档更容易建立概念。", "en": "Having the AI compare against your own old code makes the concepts click faster than reading the framework docs cold."}
+      ],
+      "tasks": [
+        {"id": "t6a", "zh": "用 Scrapy 导出全部 100 条名言到 quotes.json", "en": "Export all 100 quotes to quotes.json with Scrapy"},
+        {"id": "t6b", "zh": "把书籍爬虫改写成 Scrapy 项目并导出 CSV", "en": "Rewrite the book scraper as a Scrapy project that exports CSV"}
+      ]
+    },
+
+    {
+      "id": "s7", "path": "/stage-7",
+      "name": {"zh": "毕业项目", "en": "Capstone"},
+      "title": {"zh": "毕业项目", "en": "Capstone project"},
+      "time": {"zh": "一到两周", "en": "one to two weeks"},
+      "goal": {
+        "zh": "选一个自己真正关心的问题，从抓取、清洗到出一张图完整走一遍。项目做完后，这套技能才算真正属于自己。",
+        "en": "Pick a question you care about and take it all the way from collecting data to cleaning it to a finished chart. Finishing a project is what makes the skill yours."
+      },
+      "concepts": [
+        {"t": "p", "zh": "<b>选题顺序。</b>先查目标网站有没有官方 API 或开放数据下载，有的话直接用，比爬网页稳定也更合规。比如维基百科、arXiv、各国政府的开放数据门户、Open-Meteo 天气数据，都提供免费接口。",
+                   "en": "<b>Check for an official API first.</b> If the site offers an API or a data download, use it. It is more stable and clearly allowed. Wikipedia, arXiv, government open-data portals and Open-Meteo all provide free access."},
+        {"t": "p", "zh": "<b>适合的题目</b>是公开、非个人、数据量适中的信息。例如某个开放数据门户上的城市统计，某个领域论文的年度数量变化，公开商品目录的价格分布。",
+                   "en": "<b>Good topics</b> use public, non-personal data of moderate size, such as city statistics from an open-data portal, the yearly number of papers in a field, or price distributions in a public product catalogue."},
+        {"t": "p", "zh": "<b>交付物</b>包括一个能重复运行的脚本、一份干净的 CSV、一张用 pandas 和 matplotlib 画的图，以及一段说明数据来源和抓取方式的文字。",
+                   "en": "<b>Deliverables</b> are a script that can be re-run, a clean CSV, a chart made with pandas and matplotlib, and a short note on where the data came from and how it was collected."}
+      ],
+      "hand": [
+        {"t": "list", "title": {"zh": "项目检查清单", "en": "Project checklist"},
+         "zh": ["读过目标网站的 robots.txt 和使用条款，确认允许自动抓取。",
+                "数据里不含可以识别到具体个人的信息。",
+                "有请求间隔、重试和日志，单线程运行。",
+                "原始数据和清洗后的数据分开保存。",
+                "README 写清楚如何安装、如何运行、数据从哪来。"],
+         "en": ["You have read the site's robots.txt and terms and they allow automated collection.",
+                "The data contains nothing that identifies a specific person.",
+                "The scraper pauses, retries and logs, and runs single-threaded.",
+                "Raw data and cleaned data are stored separately.",
+                "The README explains how to install, how to run and where the data comes from."]}
+      ],
+      "ai": [
+        {"t": "prompt",
+         "zh": "我学完了 requests、BeautifulSoup、Playwright 和 Scrapy 的基础，想做一个爬虫毕业项目，我感兴趣的方向是 [填写]。\n请帮我：\n1. 提出三个具体题目，每个说明数据来源、是否有官方 API、预计数据量；\n2. 对每个来源，提醒我需要检查的 robots.txt 和条款要点；\n3. 对我选定的题目，拆成每天一两小时可以完成的小任务。\n先不要写代码。",
+         "en": "I have learned the basics of requests, BeautifulSoup, Playwright and Scrapy and want to do a capstone scraping project. I am interested in [your topic].\nPlease:\n1. suggest three concrete projects, each with its data source, whether an official API exists and the expected data size;\n2. for each source, list what I should check in its robots.txt and terms;\n3. for the project I pick, split it into tasks of one or two hours each.\nDo not write any code yet."},
+        {"t": "p", "zh": "“先不要写代码”能让 AI 把精力放在规划上。规划确认后，再逐个子任务请它生成代码，每段都按前面阶段的方法验收。",
+                   "en": "Saying do not write any code yet keeps the AI focused on planning. Once the plan is settled, ask for code one task at a time and check each piece the way earlier stages taught you."}
+      ],
+      "tasks": [
+        {"id": "t7a", "zh": "确定题目，并确认数据来源允许抓取", "en": "Pick a topic and confirm the source allows collection"},
+        {"id": "t7b", "zh": "完成脚本、CSV、图表和 README", "en": "Finish the script, CSV, chart and README"}
+      ]
+    }
+  ],
+
+  "loop": {
+    "title": {"zh": "和 AI 一起写爬虫的工作循环", "en": "The loop for scraping with AI"},
+    "goal": {
+      "zh": "AI 生成代码很快，但它看不到你的网页，也不知道代码运行的结果。人负责提供真实信息和检验结果，这个分工决定了效率。",
+      "en": "AI writes code quickly, but it cannot see your page and does not know what happened when the code ran. You supply real information and check the results. That split decides how well it goes."
+    },
+    "steps": [
+      {"k": {"zh": "描述", "en": "Describe"}, "v": {"zh": "说清楚要哪些字段、存成什么格式、大概多少页", "en": "Which fields, what file format, roughly how many pages"}},
+      {"k": {"zh": "喂真实数据", "en": "Show real data"}, "v": {"zh": "粘贴 outerHTML 或 cURL 与 JSON 片段", "en": "Paste outerHTML, or a cURL plus a JSON sample"}},
+      {"k": {"zh": "生成", "en": "Generate"}, "v": {"zh": "要求逐行注释，限定使用的库", "en": "Ask for line comments and name the libraries to use"}},
+      {"k": {"zh": "运行", "en": "Run"}, "v": {"zh": "先只跑一页，检查条数和字段", "en": "Run one page first and check counts and fields"}},
+      {"k": {"zh": "反馈", "en": "Feed back"}, "v": {"zh": "把完整报错或异常输出原样贴回去", "en": "Paste the full error or odd output back unchanged"}}
+    ],
+    "foot": {"zh": "↺ 一页跑通后再放开翻页，循环直到结果正确", "en": "↺ Once one page works, enable pagination, and repeat until the output is right"},
+    "mistakesTitle": {"zh": "AI 常犯的错误", "en": "Common AI mistakes"},
+    "mistakes": {
+      "zh": ["没看到 HTML 时编造 class 名，代码能运行但结果为空。",
+             "漏掉 timeout、请求间隔或编码设置。",
+             "使用库的旧版本写法，比如 Selenium 已移除的方法。",
+             "为了“能用”主动加入伪装、绕过验证码或代理轮换。",
+             "把 <code>select_one</code> 的结果直接取属性，不处理元素缺失的情况。"],
+      "en": ["Inventing class names when it has not seen the HTML, so the code runs and returns nothing.",
+             "Leaving out the timeout, the pause between requests or the encoding fix.",
+             "Using outdated library calls, such as removed Selenium methods.",
+             "Adding disguises, CAPTCHA bypasses or proxy rotation just to make it work.",
+             "Reading attributes straight off <code>select_one</code> without handling a missing element."]
+    }
+  },
+
+  "rules": {
+    "title": {"zh": "合规底线", "en": "Ground rules"},
+    "goal": {
+      "zh": "技术上能抓到，不等于可以抓。下面这些原则在大多数情况下够用，涉及商业用途或大规模抓取时请咨询专业人士。",
+      "en": "Being able to scrape something does not mean you may. These principles cover most learning situations. For commercial use or large-scale collection, ask a qualified professional."
+    },
+    "note": {
+      "zh": "以下内容是学习建议，不构成法律意见。各国规定不同，具体情况以当地法律和网站条款为准。",
+      "en": "This is learning guidance, not legal advice. Rules differ between countries, and local law and each site's terms take precedence."
+    },
+    "items": {
+      "zh": ["<b>遵守 robots.txt 和使用条款。</b>条款明确禁止自动抓取的网站，就换一个数据源。",
+             "<b>不碰登录墙、付费墙和验证码。</b>需要登录才能看到的内容，以及刻意设置的访问限制，都不应该用技术手段绕过。",
+             "<b>谨慎对待个人信息。</b>姓名、联系方式、社交账号内容都属于个人信息，在中国受《个人信息保护法》约束，在欧盟受 GDPR 约束。学习阶段直接避开这类数据最省心。",
+             "<b>控制频率。</b>单线程、有间隔、错误时退避。目标是不让对方服务器感受到明显负担。",
+             "<b>尊重版权。</b>抓来做个人分析和直接转载发布，性质完全不同。国内的相关争议多涉及《反不正当竞争法》，欧盟对数据库本身也有专门的权利保护。"],
+      "en": ["<b>Follow robots.txt and the terms of use.</b> If a site's terms forbid automated collection, find another source.",
+             "<b>Stay away from logins, paywalls and CAPTCHAs.</b> Content behind a login and deliberate access limits should not be bypassed by technical tricks.",
+             "<b>Be careful with personal data.</b> Names, contact details and social media content are personal data under the GDPR in the EU and under similar laws elsewhere, such as the CCPA in California. While learning, avoiding such data altogether is simplest.",
+             "<b>Keep the load low.</b> One thread, pauses between requests and backoff on errors, so the server barely notices you.",
+             "<b>Respect copyright.</b> Analysing data for yourself and republishing it are very different things. The EU also protects databases as such through the sui generis database right."]
+    }
+  },
+
+  "debug": {
+    "title": {"zh": "排错速查", "en": "Troubleshooting"},
+    "head": {"zh": ["现象", "常见原因", "先试试"], "en": ["Symptom", "Likely cause", "Try first"]},
+    "rows": [
+      {"zh": ["结果是空列表", "选择器写错，或内容由 JavaScript 加载", "在 Console 里验证选择器；打印 <code>resp.text</code> 搜索目标文字，搜不到就转阶段 4"],
+       "en": ["Empty list", "Wrong selector, or content loaded by JavaScript", "Test the selector in the Console; search <code>resp.text</code> for the text you expect and go to stage 4 if it is missing"]},
+      {"zh": ["NoneType 报错", "<code>select_one</code> 没找到元素", "先判断是否为 <code>None</code> 再取值，检查选择器"],
+       "en": ["NoneType error", "<code>select_one</code> found nothing", "Check for <code>None</code> before reading values, then fix the selector"]},
+      {"zh": ["403", "网站拒绝自动访问", "检查 robots.txt 和条款，多数情况下应该换数据源"],
+       "en": ["403", "The site refuses automated access", "Check robots.txt and the terms; usually the answer is a different source"]},
+      {"zh": ["429", "请求太频繁", "加大间隔，开启退避重试"],
+       "en": ["429", "Too many requests", "Wait longer between requests and enable backoff"]},
+      {"zh": ["5xx", "对方服务器临时故障", "稍后重试，记录失败网址"],
+       "en": ["5xx", "Temporary server problem", "Retry later and log the failed URLs"]},
+      {"zh": ["乱码", "编码识别错误", "设置 <code>resp.encoding = \"utf-8\"</code>，或用 <code>resp.apparent_encoding</code>"],
+       "en": ["Garbled text", "Wrong encoding guess", "Set <code>resp.encoding = \"utf-8\"</code> or use <code>resp.apparent_encoding</code>"]},
+      {"zh": ["Excel 打开 CSV 乱码", "缺少 BOM", "保存时用 <code>encoding=\"utf-8-sig\"</code>"],
+       "en": ["CSV garbled in Excel", "Missing BOM", "Save with <code>encoding=\"utf-8-sig\"</code>"]},
+      {"zh": ["Timeout", "网络慢或对方无响应", "确认设置了 timeout，配合重试"],
+       "en": ["Timeout", "Slow network or no response", "Make sure a timeout is set and combine it with retries"]}
+    ]
+  },
+
+  "links": [
+    {"url": "https://toscrape.com/", "name": "toscrape.com", "desc": {"zh": "本教程使用的练习网站", "en": "The practice sites used here"}},
+    {"url": "https://developer.mozilla.org/docs/Web/HTTP", "name": "MDN · HTTP", "desc": {"zh": "请求、响应、状态码的参考，可切换中文", "en": "Requests, responses and status codes"}},
+    {"url": "https://requests.readthedocs.io/", "name": "Requests", "desc": {"zh": "发送 HTTP 请求的官方文档", "en": "Official docs for sending HTTP requests"}},
+    {"url": "https://www.crummy.com/software/BeautifulSoup/bs4/doc/", "name": "Beautiful Soup", "desc": {"zh": "HTML 解析的官方文档", "en": "Official docs for parsing HTML"}},
+    {"url": "https://playwright.dev/python/", "name": "Playwright for Python", "desc": {"zh": "浏览器自动化", "en": "Browser automation"}},
+    {"url": "https://docs.scrapy.org/", "name": "Scrapy", "desc": {"zh": "爬虫框架官方文档与教程", "en": "Framework docs and tutorial"}}
+  ],
+
+  "related": {
+    "url": "https://github.com/Ankky-Zhao/llm-agent-roadmap",
+    "name": "LLM Agent Roadmap",
+    "desc": {"zh": "同一作者的 LLM Agent 学习路线，从入门到自己做项目", "en": "A companion roadmap for learning LLM agents, from first steps to your own project"}
+  }
+}
