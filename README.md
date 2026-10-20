@@ -2,7 +2,7 @@
 
 [中文](#中文) | [English](#english) · A bilingual roadmap for learning web scraping from zero, writing the code yourself or building it with AI, ending in a project of your own.
 
-🌐 **Live page: <https://ankky-zhao.github.io/web-scraping-roadmap/>** (enable GitHub Pages, see [below](#publish-the-site--发布网页))
+🌐 **Live page: <https://ankky-zhao.github.io/web-scraping-roadmap/>**
 
 A bilingual roadmap that takes complete beginners from installing Python to shipping their own scraping project. Every stage can be followed in two ways, by writing the code yourself or by building it with an AI assistant, and every example runs against sites made for scraping practice.
 
@@ -115,17 +115,6 @@ python build.py                  # 生成 site/index.html，只依赖标准库
 本项目仅用于学习，全部练习都针对专门供人练习爬虫的网站。抓取其他网站前，请先阅读其 robots.txt 和使用条款，并遵守所在地的法律。本项目内容不构成法律意见。
 
 ---
-
-## Publish the site · 发布网页
-
-The site is built and deployed by GitHub Actions on every push to `main`. It only needs to be switched on once.
-
-网页由 GitHub Actions 在每次推送到 `main` 时自动生成并部署，只需要开启一次。
-
-1. Repository **Settings → Pages** · 仓库 **Settings → Pages**
-2. Under **Build and deployment**, set **Source** to **GitHub Actions** · 在 **Build and deployment** 中把 **Source** 设为 **GitHub Actions**
-3. Open the **Actions** tab and wait for **Deploy site** to finish, or run it manually · 打开 **Actions** 页面等待 **Deploy site** 完成，也可以手动运行
-4. The page is live at `https://ankky-zhao.github.io/web-scraping-roadmap/` · 网页地址如上
 
 ## Related · 相关项目
 
