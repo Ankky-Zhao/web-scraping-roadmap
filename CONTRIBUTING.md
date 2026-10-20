@@ -37,6 +37,11 @@ python scripts/check_examples.py   # if you changed examples · 修改示例时�
 Open `site/index.html` and look at your change in both languages and in dark mode.
 打开 `site/index.html`，在中英文和深色模式下检查修改效果。
 
+## How the site is published · 网页如何发布
+
+The **Deploy site** workflow builds `site/index.html` and publishes it to GitHub Pages on every push to `main`, so there is no manual step after a merge. The **Check examples** workflow runs every example each Monday and whenever `examples/` changes.
+每次推送到 `main` 后，**Deploy site** 会自动生成并发布网页，合并后不需要手动操作。**Check examples** 每周一以及 `examples/` 有改动时运行全部示例。
+
 ## Licence · 许可
 
 By contributing you agree that code is released under MIT and text under CC BY 4.0.
